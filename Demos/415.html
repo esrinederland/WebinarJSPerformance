@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>ArcGIS FeatureLayer Performance Demo</title>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.15/esri/css/main.css" />
+  <script src="https://js.arcgis.com/4.15/"></script>
+
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+
+    #info {
+      color: #888;
+      font-family: "Avenir Next W00", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 23px;
+      padding: 5px;
+      margin: 5px;
+      width: 220px;
+      text-align: center;
+      border: solid 2px #666;
+      border-radius: 4px;
+      background-color: #fff;
+    }
+  </style>
+
+  <script>
+    require([
+      "esri/core/watchUtils",
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/layers/FeatureLayer",
+      "esri/renderers/UniqueValueRenderer",
+      "esri/symbols/SimpleLineSymbol",
+      "dojo/dom",
+      "dojo/domReady!"
+    ], function (
+      watchUtils,
+      Map,
+      MapView,
+      FeatureLayer,
+      UniqueValueRenderer,
+      SimpleLineSymbol,
+      dom
+    ) {
+      console.time("4.15 Map loaded in: ");
+      var highlightHandlers = [];
+      var map = new Map({
+        basemap: "dark-gray"
+      });
+
+      var view = new MapView({
+        container: "viewDiv",
+        map: map,
+        center: { x: 5.5, y: 52.0, spatialReference: 4326 },
+        zoom: 8
+      });
+
+      var layer = new FeatureLayer({
+        url:
+          "https://services.arcgis.com/emS4w7iyWEQiulAb/arcgis/rest/services/PC4_WM/FeatureServer/0",
+        outFields: ["*"]
+      });
+
+      map.add(layer);
+
+      view.when(function () {
+        // console.log("view when");
+        view.whenLayerView(layer).then(function (lview) {
+          // console.log("view whenLayerView");
+          watchUtils.whenFalseOnce(lview, "updating", function () {
+            // console.log("whenFalseOnce");
+            console.timeEnd("4.15 Map loaded in: ");
+            // Set up a click event handler and retrieve the screen x, y coordinates
+            view.on("pointer-move", function (evt) {
+              var screenPoint = {
+                x: evt.x,
+                y: evt.y
+              };
+
+            });
+          });
+        });
+      });
+    });
+  </script>
+</head>
+
+<body>
+  <div id="viewDiv"></div>
+
+  <div id="info" style="position: absolute; right: 15px; top: 15px;">
+    <span>4.15</span>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>FeatureLayer</title>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/3.32/esri/css/esri.css">
+  <script src="https://js.arcgis.com/3.32/"></script>
+
+  <style>
+    html,
+    body,
+    #map {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+
+    #info {
+      color: #888;
+      font-family: "Avenir Next W00", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 23px;
+      padding: 5px;
+      margin: 5px;
+      width: 220px;
+      text-align: center;
+      border: solid 2px #666;
+      border-radius: 4px;
+      background-color: #fff;
+    }
+  </style>
+
+  <script>
+    require([
+      "esri/map",
+      "esri/layers/FeatureLayer",
+      "esri/graphic",
+      "esri/symbols/SimpleLineSymbol",
+      "esri/symbols/SimpleFillSymbol",
+      "esri/Color",
+      "dojo/dom",
+      "dojo/domReady!"
+    ],
+      function (
+        Map,
+        FeatureLayer,
+        Graphic,
+        SimpleLineSymbol,
+        SimpleFillSymbol,
+        Color,
+        dom
+      ) {
+
+        var map = new Map("map", {
+          basemap: "dark-gray",
+          center: [5.5, 52.0],
+          zoom: 8
+        });
+
+        /****************************************************************
+         * Add feature layer - A FeatureLayer at minimum should point
+         * to a URL to a feature service or point to a feature collection 
+         * object.
+         ***************************************************************/
+
+        var featureLayer = new FeatureLayer(
+          "https://services.arcgis.com/emS4w7iyWEQiulAb/arcgis/rest/services/PC4_WM/FeatureServer/0",
+          {
+            outFields: ["*"]
+          }
+        );
+
+        map.addLayer(featureLayer);
+
+      });
+  </script>
+</head>
+
+<body>
+  <div id="map"></div>
+  <div id="info" style="position: absolute; right: 30px; top: 30px;">
+    <span>3.23</span>
+  </div>
+</body>
+
+</html>
